@@ -5,7 +5,6 @@ pub use consts::*;
 
 
 pub struct aiTexture;
-pub struct aiMaterial;
 pub struct aiAnimation;
 pub struct aiLight;
 pub struct aiCamera;
@@ -36,6 +35,55 @@ pub struct aiVector3D {
 
 pub struct aiColor4D {
 	r: f32, g: f32, b: f32, a: f32
+}
+
+pub struct aiMaterialProperty
+{
+    /** Specifies the name of the property (key)
+     *  Keys are generally case insensitive. 
+     */
+    mKey: aiString,
+
+	/** Textures: Specifies their exact usage semantic.
+	 * For non-texture properties, this member is always 0 
+	 * (or, better-said, #aiTextureType_NONE).
+	 */
+	mSemantic: aiTextureType,
+
+	/** Textures: Specifies the index of the texture.
+	 *  For non-texture properties, this member is always 0.
+	 */
+	mIndex: c_uint,
+
+    /**	Size of the buffer mData is pointing to, in bytes.
+	 *  This value may not be 0.
+     */
+    mDataLength: c_uint,
+
+    /** Type information for the property.
+     *
+     * Defines the data layout inside the data buffer. This is used
+	 * by the library internally to perform debug checks and to 
+	 * utilize proper type conversions. 
+	 * (It's probably a hacky solution, but it works.)
+     */
+    mType: aiPropertyTypeInfo,
+
+    /**	Binary buffer to hold the property's value.
+     * The size of the buffer is always mDataLength.
+     */
+    mData: *c_char,
+}
+
+pub struct aiMaterial {
+    /** List of all material properties loaded. */
+    mProperties: **aiMaterialProperty,
+
+    /** Number of properties in the data base */
+    mNumProperties: c_uint,
+
+	 /** Storage allocated */
+    mNumAllocated: c_uint,
 }
 
 pub struct aiNode {
