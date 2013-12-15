@@ -6,6 +6,7 @@
 
 #[comment = "Bindings and wrapper functions for AssImp."];
 #[crate_type = "lib"];
+#[feature(globs)];
 
 // TODO: Document differences between GLFW and glfw-rs
 
@@ -29,17 +30,16 @@ pub struct Scene {
 
 
 impl Scene {
-	#[fixed_stack_segment] #[inline(never)]
 	pub fn load( filename: &str, flags: u32 ) -> Result<Scene, ~str> {
 		unsafe {
-			do filename.with_c_str |fname| {
+			filename.with_c_str (|fname| {
 				ffi::aiImportFile( fname, flags )
 					.to_option().map_default(Err( ~"aiImportFile returned null" ),
-						| &ptr | Ok(
+						| ptr | Ok(
 							Scene { ptr: ptr::to_unsafe_ptr( ptr ) }
 						)
 					)
-			}
+			})
 		}
 	}
 }

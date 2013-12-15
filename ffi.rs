@@ -180,7 +180,7 @@ pub struct aiBone {
 * aiScene::mFlags
 * @endcode
 */
-struct aiMesh
+pub struct aiMesh
 {
 	/** Bitwise combination of the members of the #aiPrimitiveType enum.
 	 * This specifies which types of primitives are present in the mesh.
