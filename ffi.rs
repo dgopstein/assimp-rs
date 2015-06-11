@@ -428,6 +428,7 @@ pub struct aiScene {
 
 // C function bindings
 
+#[link(name = "assimp")]
 extern "C" {
 	#[no_mangle] pub fn aiImportFile( pFile : *const c_char, pFlags: c_uint ) -> *mut aiScene;
 }
