@@ -193,32 +193,32 @@ pub enum aiTextureType
 
 
 
-pub static AI_MAX_FACE_INDICES : uint = 0x7fffu;
+pub const AI_MAX_FACE_INDICES : usize = 0x7fffusize;
 
 /** @def AI_MAX_BONE_WEIGHTS
  *  Maximum number of indices per face (polygon). */
 
-pub static AI_MAX_BONE_WEIGHTS : uint = 0x7fffffffu;
+pub const AI_MAX_BONE_WEIGHTS : usize = 0x7fffffffusize;
 
 /** @def AI_MAX_VERTICES
  *  Maximum number of vertices per mesh.  */
 
-pub static AI_MAX_VERTICES : uint = 0x7fffffffu;
+pub const AI_MAX_VERTICES : usize = 0x7fffffffusize;
 
 /** @def AI_MAX_FACES
  *  Maximum number of faces per mesh. */
 
-pub static AI_MAX_FACES : uint = 0x7fffffffu;
+pub const AI_MAX_FACES : usize = 0x7fffffffusize;
 
 /** @def AI_MAX_NUMBER_OF_COLOR_SETS
  *  Supported number of vertex color sets per mesh. */
 
-pub static AI_MAX_NUMBER_OF_COLOR_SETS : uint = 0x8u;
+pub const AI_MAX_NUMBER_OF_COLOR_SETS : usize = 0x8usize;
 
 /** @def AI_MAX_NUMBER_OF_TEXTURECOORDS
  *  Supported number of texture coord sets (UV(W) channels) per mesh */
 
-pub static AI_MAX_NUMBER_OF_TEXTURECOORDS : uint = 0x8u;
+pub const AI_MAX_NUMBER_OF_TEXTURECOORDS : usize = 0x8usize;
 
 
 

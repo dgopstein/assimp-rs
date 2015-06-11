@@ -1,0 +1,11 @@
+[package]
+name = "assimp-rs"
+version = "0.1.0"
+
+[lib]
+name = "assimp"
+path = "assimp.rs"
+
+[dependencies]
+libc = "0.1"
+c_str = "^1.0.0"

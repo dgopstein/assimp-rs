@@ -1,4 +1,4 @@
-use std::libc::*;
+use libc::*;
 
 // re-export constants
 pub use consts::*;
@@ -18,7 +18,7 @@ pub struct aiString {
 	length: size_t,
 
 	/** String buffer. Size limit is MAXLEN */
-	data: [ c_char, ..1024/*MAXLEN*/ ],
+	data: [ c_char; 1024 ],
 }
 
 
@@ -72,12 +72,12 @@ pub struct aiMaterialProperty
     /**	Binary buffer to hold the property's value.
      * The size of the buffer is always mDataLength.
      */
-    mData: *c_char,
+    mData: *const c_char,
 }
 
 pub struct aiMaterial {
     /** List of all material properties loaded. */
-    mProperties: **aiMaterialProperty,
+    mProperties: *const *const aiMaterialProperty,
 
     /** Number of properties in the data base */
     mNumProperties: c_uint,
@@ -107,19 +107,19 @@ pub struct aiNode {
 	mTransformation: aiMatrix4x4,
 
 	/** Parent node. NULL if this node is the root node. */
-	mParent: *aiNode,
+	mParent: *const aiNode,
 
 	/** The number of child nodes of this node. */
 	mNumChildren: c_uint,
 
 	/** The child nodes of this node. NULL if mNumChildren is 0. */
-	mChildren: **aiNode,
+	mChildren: *const *const aiNode,
 
 	/** The number of meshes of this node. */
 	mNumMeshes: c_uint,
 
 	/** The meshes of this node. Each entry is an index into the mesh */
-	mMeshes: *c_uint,
+	mMeshes: *const c_uint,
 }
 
 
@@ -129,7 +129,7 @@ pub struct aiFace {
 	mNumIndices: c_uint,
 
 	// Pointer to the indices array. Size of the array is given in numIndices.
-	mIndices: *c_uint,
+	mIndices: *const c_uint,
 }
 
 
@@ -155,7 +155,7 @@ pub struct aiBone {
 	mNumWeights: c_uint,
 
 	// The vertices affected by this bone
-	mWeights: *aiVertexWeight,
+	mWeights: *const aiVertexWeight,
 
 	// Matrix that transforms from mesh space to bone space in bind pose
 	mOffsetMatrix: aiMatrix4x4,
@@ -205,7 +205,7 @@ pub struct aiMesh
 	* This array is always present in a mesh. The array is 
 	* mNumVertices in size. 
 	*/
-	mVertices: *aiVector3D,
+	mVertices: *const aiVector3D,
 
 	/** Vertex normals. 
 	* The array contains normalized vectors, NULL if not present. 
@@ -227,7 +227,7 @@ pub struct aiMesh
 	* However, this needn't apply for normals that have been taken
 	*   directly from the model file.
 	*/
-	mNormals: *aiVector3D,
+	mNormals: *const aiVector3D,
 
 	/** Vertex tangents. 
 	* The tangent of a vertex points in the direction of the positive 
@@ -241,7 +241,7 @@ pub struct aiMesh
 	* @note If the mesh contains tangents, it automatically also 
 	* contains bitangents.
 	*/
-	mTangents: *aiVector3D,
+	mTangents: *const aiVector3D,
 
 	/** Vertex bitangents. 
 	* The bitangent of a vertex points in the direction of the positive 
@@ -250,20 +250,20 @@ pub struct aiMesh
 	* @note If the mesh contains tangents, it automatically also contains
 	* bitangents.  
 	*/
-	mBitangents: *aiVector3D,
+	mBitangents: *const aiVector3D,
 
 	/** Vertex color sets. 
 	* A mesh may contain 0 to #AI_MAX_NUMBER_OF_COLOR_SETS vertex 
 	* colors per vertex. NULL if not present. Each array is
 	* mNumVertices in size if present.
 	*/
-	mColors: [ *aiColor4D, .. AI_MAX_NUMBER_OF_COLOR_SETS ],
+	mColors: [ *const aiColor4D ; AI_MAX_NUMBER_OF_COLOR_SETS ],
 
 	/** Vertex texture coords, also known as UV channels.
 	* A mesh may contain 0 to AI_MAX_NUMBER_OF_TEXTURECOORDS per
 	* vertex. NULL if not present. The array is mNumVertices in size. 
 	*/
-	mTextureCoords: [ *aiVector3D, .. AI_MAX_NUMBER_OF_TEXTURECOORDS ],
+	mTextureCoords: [ *const aiVector3D ; AI_MAX_NUMBER_OF_TEXTURECOORDS ],
 
 	/** Specifies the number of components for a given UV channel.
 	* Up to three channels are supported (UVW, for accessing volume
@@ -272,7 +272,7 @@ pub struct aiMesh
 	* If the value is 1 for a given channel, p.y is set to 0.0f, too.
 	* @note 4D coords are not supported 
 	*/
-	mNumUVComponents: [ c_uint, .. AI_MAX_NUMBER_OF_TEXTURECOORDS ],
+	mNumUVComponents: [ c_uint ; AI_MAX_NUMBER_OF_TEXTURECOORDS ],
 
 	/** The faces the mesh is constructed from. 
 	* Each face refers to a number of vertices by their indices. 
@@ -280,7 +280,7 @@ pub struct aiMesh
 	* in mNumFaces. If the #AI_SCENE_FLAGS_NON_VERBOSE_FORMAT
 	* is NOT set each face references an unique set of vertices.
 	*/
-	mFaces: *aiFace,
+	mFaces: *const aiFace,
 
 	/** The number of bones this mesh contains. 
 	* Can be 0, in which case the mBones array is NULL. 
@@ -291,7 +291,7 @@ pub struct aiMesh
 	* A bone consists of a name by which it can be found in the
 	* frame hierarchy and a set of vertex weights.
 	*/
-	mBones: **aiBone,
+	mBones: *const *const aiBone,
 
 	/** The material used by this mesh. 
 	 * A mesh does use only a single material. If an imported model uses
@@ -320,7 +320,7 @@ pub struct aiMesh
 	/** NOT CURRENTLY IN USE. Attachment meshes for this mesh, for vertex-based animation. 
 	 *  Attachment meshes carry replacement data for some of the
 	 *  mesh'es vertex components (usually positions, normals). */
-	mAnimMeshes: **aiAnimMesh,
+	mAnimMeshes: *const *const aiAnimMesh,
 }
 
 pub struct aiScene {
@@ -340,7 +340,7 @@ pub struct aiScene {
 	* Presence of further nodes depends on the format and content 
 	* of the imported file.
 	*/
-	mRootNode: *aiNode,
+	mRootNode: *const aiNode,
 
 
 
@@ -354,7 +354,7 @@ pub struct aiScene {
 	* AI_SCENE_FLAGS_INCOMPLETE flag is not set there will always 
 	* be at least ONE material.
 	*/
-	mMeshes: **aiMesh,
+	mMeshes: *const *const aiMesh,
 
 
 
@@ -368,7 +368,7 @@ pub struct aiScene {
 	* AI_SCENE_FLAGS_INCOMPLETE flag is not set there will always 
 	* be at least ONE material.
 	*/
-	mMaterials: **aiMaterial,
+	mMaterials: *const *const aiMaterial,
 
 
 
@@ -380,7 +380,7 @@ pub struct aiScene {
 	* All animations imported from the given file are listed here.
 	* The array is mNumAnimations in size.
 	*/
-	mAnimations: **aiAnimation,
+	mAnimations: *const *const aiAnimation,
 
 
 
@@ -393,7 +393,7 @@ pub struct aiScene {
 	* An example is Quake's MDL format (which is also used by
 	* some GameStudio versions)
 	*/
-	mTextures: **aiTexture,
+	mTextures: *const *const aiTexture,
 
 
 	/** The number of light sources in the scene. Light sources
@@ -406,7 +406,7 @@ pub struct aiScene {
 	* All light sources imported from the given file are
 	* listed here. The array is mNumLights in size.
 	*/
-	mLights: **aiLight,
+	mLights: *const *const aiLight,
 
 
 	/** The number of cameras in the scene. Cameras
@@ -421,13 +421,13 @@ pub struct aiScene {
 	* array (if existing) is the default camera view into
 	* the scene.
 	*/
-	mCameras: **aiCamera,
+	mCameras: *const *const aiCamera,
 
-	mPrivate: *c_void
+	mPrivate: *const c_void
 }
 
 // C function bindings
 
 extern "C" {
-	#[no_mangle] pub fn aiImportFile( pFile : *c_char, pFlags: c_uint ) -> *aiScene;
+	#[no_mangle] pub fn aiImportFile( pFile : *const c_char, pFlags: c_uint ) -> *mut aiScene;
 }
