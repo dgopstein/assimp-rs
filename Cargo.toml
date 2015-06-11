@@ -1,9 +1,9 @@
 [package]
-name = "assimp-rs"
+name = "assimp_rs"
 version = "0.1.0"
 
 [lib]
-name = "assimp"
+name = "assimp_rs"
 path = "assimp.rs"
 
 [dependencies]
