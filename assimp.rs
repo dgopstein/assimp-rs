@@ -31,11 +31,13 @@ pub struct Scene {
 
 
 impl Scene {
-	pub unsafe fn load( filename: &str, flags: u32 ) -> Result<*mut ffi::aiScene, String> {
-        let c_filename = std::ffi::CString::new(filename);
-        let maybe_scene = ffi::aiImportFile( c_filename.unwrap().as_ptr(), flags );
-        let err_msg = format!("Could not load file: {}", filename);
+	pub fn load( filename: &str, flags: u32 ) -> Result<*mut ffi::aiScene, String> {
+    unsafe {
+      let c_filename = std::ffi::CString::new(filename);
+      let maybe_scene = ffi::aiImportFile( c_filename.unwrap().as_ptr(), flags );
+      let err_msg = format!("Could not load file: {}", filename);
 
-        maybe_scene.ok_or(err_msg)
+      maybe_scene.ok_or(err_msg)
+    }
 	}
 }
