@@ -116,7 +116,7 @@ pub struct aiNode {
 	mChildren: *const *const aiNode,
 
 	/** The number of meshes of this node. */
-	mNumMeshes: c_uint,
+	pub mNumMeshes: c_uint,
 
 	/** The meshes of this node. Each entry is an index into the mesh */
 	mMeshes: *const c_uint,
@@ -345,7 +345,7 @@ pub struct aiScene {
 
 
 	/** The number of meshes in the scene. */
-	mNumMeshes: c_uint,
+	pub mNumMeshes: c_uint,
 
 	/** The array of meshes. 
 	*
@@ -430,5 +430,5 @@ pub struct aiScene {
 
 #[link(name = "assimp")]
 extern "C" {
-	#[no_mangle] pub fn aiImportFile( pFile : *const c_char, pFlags: c_uint ) -> *mut aiScene;
+	#[no_mangle] pub fn aiImportFile( pFile : *const c_char, pFlags: c_uint ) -> Option<*mut aiScene>;
 }

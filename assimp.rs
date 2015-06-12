@@ -1,13 +1,4 @@
-#[link(name = "assimp",
-	vers = "0.1",
-	uuid = "9fd3d600-20b0-11e3-8224-0800200c9a66",
-	author = "Tomasz Stachowiak")]
-
-//#[comment = "Bindings and wrapper functions for AssImp."]
-#[crate_type = "lib"]
-#[feature(globs)]
-
-// TODO: Document differences between GLFW and glfw-rs
+/// Bindings and wrapper functions for AssImp.
 
 extern crate libc;
 extern crate c_str;
@@ -25,25 +16,26 @@ pub mod consts;
 //mod private;
 
 
-//#[deriving(Eq, IterBytes)]
+use std::ops::Deref;
+impl Deref for Scene {
+  type Target = *mut ffi::aiScene;
+
+  fn deref<'a>(&'a self) -> &'a *mut ffi::aiScene {
+    &self.ptr
+  }
+}
+
 pub struct Scene {
-    ptr: *mut ffi::aiScene,
+    pub ptr: *mut ffi::aiScene,
 }
 
 
 impl Scene {
-	pub fn load( filename: &str, flags: u32 ) -> Result<Scene, &str> {
-		unsafe {
-			filename.with_c_str (|fname| {
-        let scene_ptr = ffi::aiImportFile( fname, flags );
-        Ok( Scene { ptr: scene_ptr } )
-				//ffi::aiImportFile( fname, flags )
-				//	.to_option().map_default(Err( "aiImportFile returned null" ),
-				//		| ptr | Ok(
-				//			Scene { ptr: &*ptr as *mut isize }
-				//		)
-				//	)
-			})
-		}
+	pub unsafe fn load( filename: &str, flags: u32 ) -> Result<*mut ffi::aiScene, String> {
+        let c_filename = std::ffi::CString::new(filename);
+        let maybe_scene = ffi::aiImportFile( c_filename.unwrap().as_ptr(), flags );
+        let err_msg = format!("Could not load file: {}", filename);
+
+        maybe_scene.ok_or(err_msg)
 	}
 }
