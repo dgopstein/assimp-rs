@@ -1,3 +1,5 @@
+#![allow(dead_code, non_camel_case_types, non_snake_case)]
+
 use libc::*;
 
 // re-export constants
@@ -430,5 +432,5 @@ pub struct aiScene {
 
 #[link(name = "assimp")]
 extern "C" {
-	#[no_mangle] pub fn aiImportFile( pFile : *const c_char, pFlags: c_uint ) -> Option<*mut aiScene>;
+	#[no_mangle] pub fn aiImportFile( pFile : *const c_char, pFlags: c_uint ) -> *mut aiScene;
 }
