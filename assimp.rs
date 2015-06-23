@@ -9,7 +9,7 @@ pub use consts::*;
 pub mod ffi;
 pub mod consts;
 
-pub fn load( filename: &str, flags: u32 ) -> Result<&ffi::aiScene, String> {
+pub fn load<'a>( filename: &str, flags: u32 ) -> Result<&'a ffi::aiScene, String> {
   let c_filename = std::ffi::CString::new(filename);
   let err_msg = format!("Could not load file: {}", filename);
 
