@@ -1,3 +1,5 @@
+#![feature(collections)] // Needed for slice_chars()
+
 /// Bindings and wrapper functions for AssImp.
 
 extern crate libc;
