@@ -1,4 +1,4 @@
-#![feature(collections)] // Needed for slice_chars()
+#![feature(alloc, collections)]
 
 /// Bindings and wrapper functions for AssImp.
 

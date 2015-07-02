@@ -1,6 +1,7 @@
 #![allow(dead_code, non_camel_case_types, non_snake_case)]
 
 use libc::*;
+use std;
 
 // re-export constants
 pub use consts::*;
@@ -121,19 +122,52 @@ pub struct aiNode {
     mTransformation: aiMatrix4x4,
 
     /** Parent node. NULL if this node is the root node. */
-    mParent: *const aiNode,
+    pub mParent: *const aiNode,
 
     /** The number of child nodes of this node. */
-    mNumChildren: c_uint,
+    pub mNumChildren: c_uint,
 
     /** The child nodes of this node. NULL if mNumChildren is 0. */
-    mChildren: *const *const aiNode,
+    pub mChildren: *const *const aiNode,
 
     /** The number of meshes of this node. */
     pub mNumMeshes: c_uint,
 
     /** The meshes of this node. Each entry is an index into the mesh */
     mMeshes: *const c_uint,
+}
+
+impl aiString {
+    fn to_string(&self) -> String {
+        let u8_arr = unsafe {
+                mem::transmute::<[c_char; 1024], [u8; 1024]>(self.data)
+            };
+
+        str::from_utf8(&u8_arr).unwrap()
+            .slice_chars(0, (self.length as usize)).to_string()
+    }
+}
+
+impl aiNode {
+
+
+    pub fn name(&self) -> String {
+        self.mName.to_string()
+    }
+
+    pub fn children(&self) -> Vec<Box<aiNode>> {
+        let n_children: usize = self.mNumChildren as usize;
+        let children = unsafe {
+            let arr_of_raw =
+                std::slice::from_raw_parts(self.mChildren as *const *mut aiNode, n_children);
+
+            arr_of_raw.iter().map(|raw| Box::from_raw(*raw)).collect()
+
+                // mem::transmute::<*const *const aiNode,
+                //                  &[&aiNode]>(self.mChildren)
+        };
+        children //.slice(0, n_children)
+    }
 }
 
 
