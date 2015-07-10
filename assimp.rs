@@ -11,7 +11,7 @@ pub use consts::*;
 pub mod ffi;
 pub mod consts;
 
-pub fn load<'a>( filename: &str, flags: u32 ) -> Result<&'a ffi::aiScene, String> {
+pub fn load<'a>( filename: &str, flags: u32 ) -> Result<Box<ffi::aiScene>, String> {
   let c_filename = std::ffi::CString::new(filename);
   let err_msg = format!("Could not load file: {}", filename);
 
@@ -21,7 +21,7 @@ pub fn load<'a>( filename: &str, flags: u32 ) -> Result<&'a ffi::aiScene, String
     if scene_ptr.is_null() {
       Err(err_msg)
     } else {
-      Ok(&*scene_ptr)
+      Ok(Box::from_raw(scene_ptr))
     }
   }
 }

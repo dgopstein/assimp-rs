@@ -24,16 +24,21 @@ pub struct aiString {
     data: [ c_char; 1024 ],
 }
 
-use std::{mem, fmt, str};
-impl fmt::Debug for aiString {
-    fn fmt(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
+impl aiString {
+    fn to_string(&self) -> String {
         let u8_arr = unsafe {
-                mem::transmute::<[c_char; 1024], [u8; 1024]>(self.data)
+                std::mem::transmute::<[c_char; 1024], [u8; 1024]>(self.data)
             };
 
-        str::from_utf8(&u8_arr).unwrap()
-            .slice_chars(0, (self.length as usize))
-            .fmt(formatter)
+        let str_res = std::str::from_utf8(&u8_arr[0 .. (self.length as usize)]);
+
+        match str_res {
+            Ok(s) => { s.to_string() }
+            Err(e) => {
+                println!("Could not read Assimp string: {}", e);
+                "[Invalid String]".to_string()
+            }
+        }
     }
 }
 
@@ -137,22 +142,18 @@ pub struct aiNode {
     mMeshes: *const c_uint,
 }
 
-impl aiString {
-    fn to_string(&self) -> String {
-        let u8_arr = unsafe {
-                mem::transmute::<[c_char; 1024], [u8; 1024]>(self.data)
-            };
-
-        str::from_utf8(&u8_arr).unwrap()
-            .slice_chars(0, (self.length as usize)).to_string()
-    }
-}
-
 impl aiNode {
-
-
     pub fn name(&self) -> String {
         self.mName.to_string()
+    }
+
+    pub fn transformation(&self) -> [[f32; 4]; 4] {
+        let m = &self.mTransformation;
+
+        [[m.a1, m.a2, m.a3, m.a4],
+         [m.b1, m.b2, m.b3, m.b4],
+         [m.c1, m.c2, m.c3, m.c4],
+         [m.d1, m.d2, m.d3, m.d4]]
     }
 
     pub fn children(&self) -> Vec<Box<aiNode>> {
@@ -472,6 +473,16 @@ pub struct aiScene {
     mCameras: *const *const aiCamera,
 
     mPrivate: *const c_void
+}
+
+impl aiScene {
+    pub fn root_node(&self) -> Box<aiNode> {
+        let root_node = unsafe {
+            Box::from_raw(self.mRootNode as *mut aiNode)
+        };
+
+        root_node
+    }
 }
 
 // C function bindings
